@@ -90,28 +90,26 @@ class RecipeIndex(Resource):
 
     def get(self):
 
-        recipes = Recipe.query.all()
+        user_id = session.get('user_id')
+        
+        if user_id:
+            recipes = Recipe.query.all()
 
-        serialized_recipes = []
-        for recipe in recipes:
-            serialized_recipes.append(recipe.to_dict())
+            serialized_recipes = []
+            for recipe in recipes:
+                serialized_recipes.append(recipe.to_dict())
 
-        return serialized_recipes
+            return serialized_recipes, 200
+
+        return {'error': 'Unauthorized'}, 401
 
     def post(self):
         json = request.get_json()
+        
+        if len(json['instructions']) <=50:
+            return {'error': 'Invalid Instructions'},422
 
         user_id = session.get('user_id')
-
-        # title = json.get('title')
-
-        # if title is None or title.strip() == "":
-        #     return {'error': 'Invalid title'}, 422
-
-        # instructions = json.get('instructions')
-
-        # if instructions is None or instructions.strip() == "":
-        #     return {'error': 'Invalid instructions'}, 422
 
         new_recipe = Recipe(
             title=json['title'],
