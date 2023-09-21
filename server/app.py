@@ -28,7 +28,7 @@ class Signup(Resource):
 
         if username is None or username.strip() == "":
             return {'error': 'Invalid username'}, 422
-
+        
         user = User(
             username=json['username'],
             image_url=json['image_url'],
@@ -40,7 +40,16 @@ class Signup(Resource):
         db.session.add(user)
         db.session.commit()
         session['user_id'] = user.id
-        return user.to_dict(), 201
+        # return user.to_dict(), 201
+
+        return (
+            {
+                "id" : user.id,
+                "username" : user.username,
+                "image_url" : user.image_url,
+                "bio" : user.bio
+            }
+        ), 201
 
 
 class CheckSession(Resource):
