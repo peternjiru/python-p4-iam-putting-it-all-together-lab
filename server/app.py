@@ -28,7 +28,7 @@ class Signup(Resource):
 
         if username is None or username.strip() == "":
             return {'error': 'Invalid username'}, 422
-        
+
         user = User(
             username=json['username'],
             image_url=json['image_url'],
@@ -40,14 +40,15 @@ class Signup(Resource):
         db.session.add(user)
         db.session.commit()
         session['user_id'] = user.id
-        # return user.to_dict(), 201
+
+        # return user.to_dict(), 201 # this returns the whole object -  not needed in the use case
 
         return (
             {
-                "id" : user.id,
-                "username" : user.username,
-                "image_url" : user.image_url,
-                "bio" : user.bio
+                "id": user.id,
+                "username": user.username,
+                "image_url": user.image_url,
+                "bio": user.bio
             }
         ), 201
 
@@ -100,7 +101,7 @@ class RecipeIndex(Resource):
     def get(self):
 
         user_id = session.get('user_id')
-        
+
         if user_id:
             recipes = Recipe.query.all()
 
@@ -114,9 +115,9 @@ class RecipeIndex(Resource):
 
     def post(self):
         json = request.get_json()
-        
-        if len(json['instructions']) <=50:
-            return {'error': 'Invalid Instructions'},422
+
+        if len(json['instructions']) <= 50:
+            return {'error': 'Invalid Instructions'}, 422
 
         user_id = session.get('user_id')
 
